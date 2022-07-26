@@ -1,2 +1,2 @@
-data/generated_path/*
-data/dynamic_pos/*
+data/dynamic_pos/
+data/cleaned_empty/
