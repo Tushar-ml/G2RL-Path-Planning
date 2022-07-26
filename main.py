@@ -2,14 +2,27 @@ from map_generator import map_to_value, start_end_points, value_to_map
 from global_mapper import find_path, return_path
 from PIL import Image
 import numpy as np
+from dynamic_obstacle import initialize_objects, update_coords
 
-map_path = "data/cleaned_empty/empty-48-48-random-1_60_agents.png"
+map_path = "data/cleaned_empty/empty-48-48-random-10_60_agents.png"
+no_of_amr = 30
+agent = 1
+# map_path = 'data/random-1.png'
 map_img_arr = np.asarray(Image.open(map_path))
+coord, inst_arr = initialize_objects(map_img_arr, no_of_amr)
 
-value_map = map_to_value(map_img_arr)
-start, end = start_end_points(value_map)
+inst_arr[coord[agent][0], coord[agent][1]] = [255,0,0]
 
-path, fov= find_path(value_map, start, end)
-short_path = return_path(path)
+value_map = map_to_value(inst_arr)
+start_end_coords = start_end_points(coord, value_map)
 
-value_to_map(short_path, map_img_arr, start, end, fov, False)
+paths = dict()
+for idx, idx_coords in start_end_coords:
+    path, fov= find_path(value_map, idx_coords[:2], idx_coords[2:])
+    short_path = return_path(path)
+
+    paths[idx] = short_path
+
+# arr = value_to_map(paths, map_img_arr, [], False)
+update_coords(paths,inst_arr) # which will update the actions
+# initialize_update_dynamic(arr)

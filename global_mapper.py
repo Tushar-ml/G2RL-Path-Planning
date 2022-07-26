@@ -74,15 +74,18 @@ def a_star(grid, init, goal, cost, delta, heuristic):
 
 def return_path(path):
     coord = []
-    dest = path[-1][2]
-    while True:
-        if dest != None:
-            coord.append(dest.pos)
-            dest = dest.parent
-        else:
-            break
+    try:
+        dest = path[-1][2]
+        while True:
+            if dest != None:
+                coord.append(dest.pos)
+                dest = dest.parent
+            else:
+                break
 
-    return coord[::-1]
+        return coord[::-1]
+    except:
+        return coord
 
 def find_path(maze, start, end):
 
