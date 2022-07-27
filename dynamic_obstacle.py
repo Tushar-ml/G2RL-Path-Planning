@@ -46,7 +46,7 @@ def update_coords(coords, inst_arr,agent, time_idx, waiting_list, width, global_
 
     
     local_obs = []
-    local_map = []
+    local_map = np.array([])
     # while time_idx < timestamp:
     for idx, coord in coords.items():
         isEnd = False
@@ -94,7 +94,7 @@ def update_coords(coords, inst_arr,agent, time_idx, waiting_list, width, global_
             global_map[h_old, w_old] = 255
             local_map = global_map[h_new - width:h_new + width, w_new - width:w_new + width]
 
-    return local_obs, inst_arr, waiting_list, local_map, global_map
+    return np.array(local_obs), inst_arr, waiting_list, np.array(local_map), global_map
 
         # time_idx += 1
         # if len(local_obs)>0:

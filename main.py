@@ -61,8 +61,10 @@ while time_idx < timestamp:
 
     # if len(local_map) > 0:
     #     images_local_map.append(Image.fromarray(local_map,'P'))
+    if len(local_map) > 0 and len(local_obs) > 0:
+        local_map = local_map.reshape(local_map.shape[0],local_map.shape[1],1)
+        input_arr = np.dstack((local_obs, local_map))
 
-    
     time_idx += 1
 
 # images_agent[0].save('data/agent_obs.gif',
