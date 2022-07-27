@@ -3,9 +3,10 @@ from collections import defaultdict
 import os
 from PIL import Image
 from numpy import array, asarray
+import numpy as np
 import random
 
-img_path = './data/cleaned_empty/empty-48-48-random-10_60_agents.png'
+img_path = './data/cleaned_empty/empty-48-48-random-1_60_agents.png'
 
 
 
@@ -23,12 +24,7 @@ def initialize_objects(arr, n_dynamic_obst = 10):
             arr[h_obs, w_obs] = [255,165,0]
             n_dynamic_obst -= 1
             coord.append([h_obs,w_obs])
-            # print(f"Obstacle {n_dynamic_obst} placed")
-
-    # img = Image.fromarray(arr, 'RGB')
-    # filename = "sample_results_1/dyn_init_"+img_path.split("/")[-1]
-    # img.save(f'data/dynamic_pos/{filename}')
-
+    
     return coord, arr
 
 def direction(start,final):
@@ -39,14 +35,13 @@ def update_coords(coords, inst_arr,agent, timestamp = 50):
     images_agent = []
     images_map = []
     width = 4
-    # choices = [(0,-1),(0,1),(-1,0),(1,0),(0,0)]
-    # new_coord = coords.copy()
+    
     h,w = inst_arr.shape[:2]
     time_idx = 1
     images_map.append(Image.fromarray(inst_arr, 'RGB'))
-    print(type(inst_arr))
 
     local_coords = coords[agent][0]
+    images_agent.append(Image.fromarray(np.ones((2*width, 2*width, 3), np.uint8)*255))
     images_agent.append(Image.fromarray(inst_arr[local_coords[0] - width : local_coords[0]+width,local_coords[1] - width : local_coords[1]+width ]))
 
     waiting_list = defaultdict(dict)
@@ -95,9 +90,6 @@ def update_coords(coords, inst_arr,agent, timestamp = 50):
 
             if idx == agent:
                 local_obs = inst_arr[h_new - width:h_new + width, w_new - width:w_new + width]
-                    
-            # new_coord[idx] = (h_new,w_new)
-            # print(f"Object {idx} Moved from {[h_old,w_old]} => {[h_new,w_new]}")
 
         time_idx += 1
         if len(local_obs)>0:
@@ -107,15 +99,14 @@ def update_coords(coords, inst_arr,agent, timestamp = 50):
 
         images_map.append(img_map)
         images_agent.append(img_agent)
-    # filename = f"sample_results_1/dyn_move_{k}_"+img_path.split("/")[-1]
-    # img.save(f'data/dynamic_pos/{filename}')
-    # print(f"{filename} saved!")
-    
+
     images_agent[0].save('data/agent_obs.gif',
                 save_all=True, append_images=images_agent[1:], optimize=False, duration=timestamp*2, loop=0)
     
     images_map[0].save('data/dynamic_obst.gif',
                 save_all=True, append_images=images_map[1:], optimize=False, duration=timestamp*2, loop=0)
+
+    
     
 
     
