@@ -90,9 +90,9 @@ def update_coords(coords, inst_arr,agent, time_idx, waiting_list, width, global_
             inst_arr[h_old, w_old] = [255,255,255]
 
         if idx == agent:
-            local_obs = inst_arr[h_new - width:h_new + width, w_new - width:w_new + width]
+            local_obs = inst_arr[max(0,h_new - width):min(h-1,h_new + width), max(0,w_new - width):min(w-1,w_new + width)]
             global_map[h_old, w_old] = 255
-            local_map = global_map[h_new - width:h_new + width, w_new - width:w_new + width]
+            local_map = global_map[max(0,h_new - width):min(h-1,h_new + width), max(0,w_new - width):min(w-1,w_new + width)]
 
     return np.array(local_obs), inst_arr, waiting_list, np.array(local_map), global_map
 

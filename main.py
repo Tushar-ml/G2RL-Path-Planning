@@ -30,6 +30,7 @@ global_mapper_arr = np.asarray(global_mapper_arr)
 gmap = Image.fromarray(global_mapper_arr,"L")
 gmap.save("data/global_agent_map.png")
 ############ Update Movement of All AMRs #############
+h,w = 48,48
 
 timestamp = 50
 time_idx = 1
@@ -40,14 +41,14 @@ images_agent = []
 images_local_map = []
 
 time_idx = 1
-width = 4
+width = 15
 images_map.append(Image.fromarray(inst_arr, 'RGB'))
 images_local_map.append(Image.fromarray(np.ones((2*width, 2*width), np.uint8)*255))
 
 local_coords = paths[agent][0]
-images_agent.append(Image.fromarray(np.ones((2*width, 2*width, 3), np.uint8)*255))
-images_agent.append(Image.fromarray(inst_arr[local_coords[0] - width : local_coords[0]+width,local_coords[1] - width : local_coords[1]+width ]))
-agent_map_local = np.asarray([])
+# images_agent.append(Image.fromarray(np.ones((2*width, 2*width, 3), np.uint8)*255))
+# images_agent.append(Image.fromarray(inst_arr[max(0,local_coords[0] - width) : min(h-1,local_coords[0]+width),max(0,local_coords[1] - width) : min(w-1,local_coords[1]+width) ]))
+# agent_map_local = np.asarray([])
 while time_idx < timestamp:
     # local_arr = local_guidance(paths[agent], global_mapper_arr, time_idx)
     local_obs, map_obs, waiting_list, local_map, global_mapper_arr = update_coords(paths,inst_arr, 1,time_idx, waiting_list, width,global_mapper_arr)
