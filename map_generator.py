@@ -59,9 +59,9 @@ def start_end_points(obs_coords, arr):
 
 def global_guidance(paths, arr):
 
-    guidance = np.ones((len(arr), len(arr[0]),3), np.uint8)*255
+    guidance = np.ones((len(arr), len(arr[0])), np.uint8)*255
     for x,y in paths:
-        guidance[x,y] = [105,105,105]
+        guidance[x,y] = 105
 
     return guidance
 

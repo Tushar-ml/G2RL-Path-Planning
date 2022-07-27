@@ -27,7 +27,7 @@ for idx, idx_coords in start_end_coords:
 
 global_mapper_arr = global_guidance(paths[agent], map_img_arr)
 global_mapper_arr = np.asarray(global_mapper_arr)
-gmap = Image.fromarray(global_mapper_arr, 'RGB')
+gmap = Image.fromarray(global_mapper_arr,"L")
 gmap.save("data/global_agent_map.png")
 ############ Update Movement of All AMRs #############
 
@@ -42,7 +42,7 @@ images_local_map = []
 time_idx = 1
 width = 4
 images_map.append(Image.fromarray(inst_arr, 'RGB'))
-images_local_map.append(Image.fromarray(np.ones((2*width, 2*width, 3), np.uint8)*255))
+images_local_map.append(Image.fromarray(np.ones((2*width, 2*width), np.uint8)*255))
 
 local_coords = paths[agent][0]
 images_agent.append(Image.fromarray(np.ones((2*width, 2*width, 3), np.uint8)*255))
@@ -60,7 +60,8 @@ while time_idx < timestamp:
     #     images_map.append(img_map)
 
     # if len(local_map) > 0:
-    #     images_local_map.append(Image.fromarray(local_map,'RGB'))
+    #     images_local_map.append(Image.fromarray(local_map,'P'))
+
     
     time_idx += 1
 
@@ -70,7 +71,6 @@ while time_idx < timestamp:
 # images_map[0].save('data/dynamic_obst.gif',
 #             save_all=True, append_images=images_map[1:], optimize=False, duration=timestamp*4, loop=0)  
 
+
 # images_local_map[0].save('data/agent_local_map.gif',
 #                 save_all=True, append_images=images_local_map[1:], optimize=False, duration=timestamp*4, loop=0)
-   
-     # which will update the actions
