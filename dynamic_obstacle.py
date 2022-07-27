@@ -1,6 +1,6 @@
 from multiprocessing.spawn import import_main_path
 import matplotlib.pyplot as plt
-
+from collections import defaultdict
 import os
 from PIL import Image
 from numpy import array, asarray
@@ -49,14 +49,19 @@ def update_coords(coords, inst_arr,agent, timestamp = 50):
     local_coords = coords[agent][0]
     images_agent.append(Image.fromarray(inst_arr[local_coords[0] - 4 : local_coords[0]+4,local_coords[1] - 4 : local_coords[1]+4 ]))
 
+    waiting_list = defaultdict(list)
     while time_idx < timestamp:
         local_obs = []
         for idx, coord in coords.items():
             
             isEnd = False
             try:
-                h_old, w_old = coord[time_idx-1]
-                h_new, w_new = coord[time_idx]
+                if idx in waiting_list and len(waiting_list[idx]) > 0:
+                    local_time_idx, h_new, w_new = waiting_list[idx].pop()
+                    h_old, w_old = coord[local_time_idx-1]
+                else:
+                    h_old, w_old = coord[time_idx-1]
+                    h_new, w_new = coord[time_idx]
             except:
                 h_old, w_old = coord[-1]
                 h_new, w_new = coord[-1]
@@ -68,6 +73,10 @@ def update_coords(coords, inst_arr,agent, timestamp = 50):
             if h_new >= h or w_new >= w:
                 continue
             cell_coord = inst_arr[h_new, w_new]
+
+            if cell_coord[0] == 255 and cell_coord[1] == 165 and cell_coord[2] == 0:
+                waiting_list[idx].append([time_idx, h_new, w_new])
+                continue
             
             inst_arr[h_new, w_new] = inst_arr[h_old, w_old]
             if not isEnd:
@@ -80,7 +89,7 @@ def update_coords(coords, inst_arr,agent, timestamp = 50):
             # print(f"Object {idx} Moved from {[h_old,w_old]} => {[h_new,w_new]}")
 
         time_idx += 1
-        img_agent = Image.fromarray(local_obs, 'RGB')
+        img_agent = Image.fromarray(asarray(local_obs), 'RGB')
         img_map = Image.fromarray(inst_arr, 'RGB')
 
         images_map.append(img_map)
