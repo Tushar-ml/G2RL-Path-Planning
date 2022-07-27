@@ -57,22 +57,18 @@ def start_end_points(obs_coords, arr):
         # print(f"Generated for {i} obstacle.")
     return coords
 
-def value_to_map(paths_dict, arr, expands, show_view = False):
-    for key, paths in paths_dict.items():
-        if show_view:
-            h,w = len(expands), len(expands[0])
-            for i in range(h):
-                for j in range(w):
-                    if expands[i][j] != -1:
-                        arr[i,j] = [0,255,0]
-        for path_coord in paths:
-            x,y = path_coord
-            arr[x,y] = [105,105,105]
+def global_guidance(paths, arr):
 
-        arr[paths[0][0],paths[0][1]] = [255,0,0]
-        arr[paths[-1][0], paths[-1][1]] = [255,0,0]
+    guidance = np.ones((len(arr), len(arr[0]),3), np.uint8)*255
+    for x,y in paths:
+        guidance[x,y] = [105,105,105]
 
-    img = Image.fromarray(arr, "RGB")
+    return guidance
+
+def local_guidance(paths, arr, idx):
+    if idx < len(paths):
+        arr[paths[idx]] = [255,255,255]
+        
     return arr
 
 def heuristic_generator(arr, end):
