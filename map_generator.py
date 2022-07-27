@@ -73,7 +73,6 @@ def value_to_map(paths_dict, arr, expands, show_view = False):
         arr[paths[-1][0], paths[-1][1]] = [255,0,0]
 
     img = Image.fromarray(arr, "RGB")
-    img.save(f'data/a_star_combine.png')
     return arr
 
 def heuristic_generator(arr, end):

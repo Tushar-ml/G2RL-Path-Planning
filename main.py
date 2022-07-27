@@ -5,13 +5,14 @@ import numpy as np
 from dynamic_obstacle import initialize_objects, update_coords
 
 map_path = "data/cleaned_empty/empty-48-48-random-10_60_agents.png"
-no_of_amr = 30
-agent = 1
+no_of_amr = 20
+agent = [1]
 # map_path = 'data/random-1.png'
 map_img_arr = np.asarray(Image.open(map_path))
 coord, inst_arr = initialize_objects(map_img_arr, no_of_amr)
 
-inst_arr[coord[agent][0], coord[agent][1]] = [255,0,0]
+for a in agent:
+    inst_arr[coord[a][0], coord[a][1]] = [255,0,0]
 
 value_map = map_to_value(inst_arr)
 start_end_coords = start_end_points(coord, value_map)
@@ -24,5 +25,4 @@ for idx, idx_coords in start_end_coords:
     paths[idx] = short_path
 
 # arr = value_to_map(paths, map_img_arr, [], False)
-update_coords(paths,inst_arr) # which will update the actions
-# initialize_update_dynamic(arr)
+update_coords(paths,inst_arr, 1) # which will update the actions
