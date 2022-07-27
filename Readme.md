@@ -1,1 +1,3 @@
-G2RL - Path Finding
+# G2RL - Path Finding
+This repo is the code implementation of this paper: [Paper Link](https://arxiv.org/abs/2005.05420) <br>
+This repo is still in progress. Will update when done....
