@@ -57,7 +57,7 @@ model_3d_cnn = get_cnn_model(2*width, 2*width, 4,nt)
 input_arr = []
 while time_idx < timestamp:
     
-    local_obs, map_obs, waiting_list, local_map, global_mapper_arr = update_coords(paths,inst_arr, 1,time_idx, waiting_list, width,global_mapper_arr)
+    local_obs, local_map, global_mapper_arr = update_coords(paths,inst_arr, 1,time_idx, width,global_mapper_arr)
     # if len(local_obs)>0:
     #         img_agent = Image.fromarray(np.asarray(local_obs), 'RGB')
     #         images_agent.append(img_agent)
@@ -77,7 +77,7 @@ while time_idx < timestamp:
         if len(input_arr) == nt:
             final_input_arr = np.array(input_arr)
             # print(final_input_arr.shape)
-            final_input_arr = final_input_arr.reshape(1, final_input_arr.shape[1], final_input_arr.shape[2], final_input_arr.shape[0],nt)
+            final_input_arr = final_input_arr.reshape(1, nt, final_input_arr.shape[1], final_input_arr.shape[2], final_input_arr.shape[0])
             out = model_3d_cnn.predict(final_input_arr)
             print(out)
             input_arr.pop(0)
