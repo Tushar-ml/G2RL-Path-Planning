@@ -22,12 +22,13 @@ def initialize_objects(arr, n_dynamic_obst = 10):
     
     return coord, arr
 
-def update_coords(coords, inst_arr,agent, time_idx, width, global_map, direction, agent_old_coordinates):
+def update_coords(coords, inst_arr,agent, time_idx, width, global_map, direction, agent_old_coordinates, cells_skipped):
 
     h,w = inst_arr.shape[:2]
     
     local_obs = np.array([])
     local_map = np.array([])
+    agent_reward = 0
 
     for idx, coord in coords.items():
 
@@ -36,8 +37,22 @@ def update_coords(coords, inst_arr,agent, time_idx, width, global_map, direction
             h_old, w_old = agent_old_coordinates[0], agent_old_coordinates[1]
             h_new, w_new == h_old + direction[0], w_old + direction[1]
 
+
             if (h_new == coord[-1][0] and w_new == coord[-1][1]) or (h_new >= h or w_new >= w):
                 agentDone = True
+
+            if (global_map[h_new, w_new] == 255):
+                agent_reward += rewards_dict('0')
+                cells_skipped += 1
+            
+            elif (inst_arr[h_new,w_new][0] == 255 and inst_arr[h_new,w_new][0] == 165 and inst_arr[h_new,w_new][0] == 0) or (inst_arr[h_new,w_new][0] == 0 and inst_arr[h_new,w_new][0] == 0 and inst_arr[h_new,w_new][0] == 0):
+                agent_reward += rewards_dict('1')
+                print('Crashed')
+                agentDone = True
+
+            elif (global_map[h_new, w_new] != 255 and cells_skipped >= 0):
+                agent_reward += rewards_dict('2',cells_skipped)
+                cells_skipped = 0
             
             if not agentDone:
                 inst_arr[h_new, w_new] = [255,0,0]
@@ -63,8 +78,20 @@ def update_coords(coords, inst_arr,agent, time_idx, width, global_map, direction
                 inst_arr[h_new, w_new] = [255,165,0]
                 inst_arr[h_old, w_old] = [255,255,255]
 
-    return np.array(local_obs), np.array(local_map), global_map, agentDone
+    return np.array(local_obs), np.array(local_map), global_map, agentDone, agent_reward, cells_skipped
 
+
+def rewards_dict(case, N = 0):
+    r1,r2,r3 = -0.01, -0.1, 0.1
+    rewards = {
+        '0':r1,
+        '1':r1 + r2,
+        '2': r1 + N*r3
+    }
+
+    return rewards[case]
+
+    
     
     
 

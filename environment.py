@@ -29,6 +29,7 @@ class WarehouseEnvironment:
         self.generate_end_points_and_paths()
         self.time_idx = 1
         self.scenes = []
+        self.cells_skipped = 0
     
     def generate_end_points_and_paths(self):
         value_map = map_to_value(self.init_arr)
@@ -53,9 +54,10 @@ class WarehouseEnvironment:
         # print(f'Action taken: {conv}')
         
         target_array = (2*self.local_fov, 2*self.local_fov, 4)
-        local_obs, local_map, self.global_mapper_arr, isAgentDone = update_coords(
+        local_obs, local_map, self.global_mapper_arr, isAgentDone, rewards, self.cells_skipped = update_coords(
             self.agents_paths, self.init_arr, self.agent_idx, self.time_idx,
-            self.local_fov, self.global_mapper_arr, [x,y], self.agent_prev_coord
+            self.local_fov, self.global_mapper_arr, [x,y], self.agent_prev_coord,
+            self.cells_skipped
         )
 
         self.scenes.append(Image.fromarray(local_obs, 'RGB'))
@@ -65,7 +67,7 @@ class WarehouseEnvironment:
         combined_arr = np.dstack((local_obs, local_map))
         combined_arr = symmetric_pad_array(combined_arr, target_array, 255)
 
-        return combined_arr, isAgentDone
+        return combined_arr, rewards, isAgentDone
     
     def create_scenes(self, path = "data/agent_locals.gif", length_s = 100):
         if len(self.scenes) > 0:
@@ -89,16 +91,18 @@ actions = [0,1,2,3,4]
 
 
 env = WarehouseEnvironment()
-env.reset()
 
-for ep in range(1):
+
+for ep in range(10):
+    env.reset()
     print(f'Episode: {ep}')
     for i in range(100):
         act = random.choice(actions)
-        new_state, isDone = env.step(act)
+        new_state,rewards,isDone = env.step(act)
+        print(rewards)
         if isDone:
             print("Reached Gole")
             break
 
 
-env.create_scenes()
+    env.create_scenes(path = f"data/agent_local_{ep}.gif")

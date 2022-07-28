@@ -4,19 +4,20 @@ from glob import glob
 import os
 # load the image and convert into
 # numpy array
-empty_images = glob('data/generated_path/empty*')
-generated_images = glob('data/a_star*')
+empty_images = glob('data/cleaned_empty/empty*')
+generated_images = glob('data/agent_local_*')
 def clean():
     for img_name in empty_images:
 
         img = Image.open(img_name)  
         numpydata = asarray(img)
+        numpydata = numpydata.copy()
         h,w = numpydata.shape[:2]
 
         for i in range(h):
             for j in range(w):
 
-                if numpydata[i,j][0] != 0 or numpydata[i,j][1] != 0 or numpydata[i,j][2] != 0:
+                if numpydata[i,j][0] != 0 and numpydata[i,j][1] !=0 and numpydata[i,j][2] != 0:
                     numpydata[i,j] = [255,255,255]
         
         img = Image.fromarray(numpydata, 'RGB')
@@ -30,4 +31,4 @@ def remove():
         os.remove(img)
 
 
-remove()
+clean()
