@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 from collections import defaultdict
 import os
 from PIL import Image
