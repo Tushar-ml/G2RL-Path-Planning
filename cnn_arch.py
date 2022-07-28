@@ -15,21 +15,7 @@ def get_cnn_model(height, width, depth, nt):
     model.add(layers.LSTM(512))
     model.add(layers.Dense(512))
     model.add(layers.Dense(5))
-    
-    # model.add(layers.Conv3D(32,(3,3,3),activation='relu')
-    # model.add(layers.MaxPooling3D((1,1,1)))
-    # model.add(layers.Conv3D(64,(3,3,3),activation='relu'))
-    # model.add(layers.Conv3D(64,(2,2,2),activation='relu'))
-    # model.add(layers.MaxPooling3D((2,2,2)))
-    # model.add(layers.Dropout(0.6))
-    # model.add(layers.Flatten())
 
     print(model.summary())
-    model.compile(optimizer='rmsprop',loss='mean_absolute_error', metrics=['mean_absolute_error'])
+    model.compile(optimizer='rmsprop')
     return model
-
-get_cnn_model(30,30,4,4)
-# def get_predicted_data(model, data):
-#     intermediate_layer_model = Model(inputs=model.input,
-#                                  outputs=model.output)
-#     intermediate_output = intermediate_layer_model.predict(data)
