@@ -10,7 +10,7 @@ img_path = './data/cleaned_empty/empty-48-48-random-1_60_agents.png'
 
 
 def initialize_objects(arr, n_dynamic_obst = 10):
-    
+    arr = arr.copy()
     coord = []
     h,w = arr.shape[:2]
 
