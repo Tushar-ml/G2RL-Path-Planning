@@ -65,7 +65,7 @@ def update_coords(coords, inst_arr, agent, time_idx, width, global_map, directio
         h_new, w_new = h_old, w_old
 
     if manhattan_distance(h_new, w_new, coord[-1][0], coord[-1][1]) < dist:
-        agent_reward += rewards_dict('3')
+        # agent_reward += rewards_dict('3')
         dist = manhattan_distance(h_new, w_new, coord[-1][0], coord[-1][1])
     
     inst_arr[h_old, w_old] = [255,255,255]

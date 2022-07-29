@@ -16,6 +16,5 @@ def get_cnn_model(height, width, depth, nt):
     model.add(layers.Dense(512, activation='relu'))
     model.add(layers.Dense(5, activation = 'linear'))
 
-    print(model.summary())
-    model.compile(optimizer='rmsprop')
+    model.compile(optimizer='rmsprop', loss = 'mse')
     return model

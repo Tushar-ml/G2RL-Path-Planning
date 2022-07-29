@@ -47,7 +47,7 @@ def training():
         if i % 100 == 0:
             # env.create_scenes(f"data/agents_locals_q_learning_{i}.gif")
             rewards_window.append(sum(all_rewards[-100:])/100)
-            print(f"Episode: {i} cum_reward: {sum(all_rewards[-100:])/100}")
+            print(f"Episode: {i} reward: {reward}")
 
     print("Training finished.\n")
 
