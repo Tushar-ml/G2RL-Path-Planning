@@ -68,3 +68,46 @@ if __name__ == '__main__':
     num_of_episodes = 100
     timesteps_per_episode = 1000
     agent.q_network.summary()
+
+    import numpy as np
+    import progressbar
+
+    for e in range(0, num_of_episodes):
+        # Reset the enviroment
+        _, state = env.reset()
+        
+        # Initialize variables
+        reward = 0
+        terminated = False
+        
+        bar = progressbar.ProgressBar(maxval=timesteps_per_episode/10, widgets=\
+    [progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
+        bar.start()
+        
+        for timestep in range(timesteps_per_episode):
+            # Run Action
+            action = agent.act(state)
+            
+            # Take action    
+            next_state, reward, terminated, info = env.step(action) 
+            next_state = np.reshape(next_state, [1, 1])
+            agent.store(state, action, reward, next_state, terminated)
+            
+            state = next_state
+            
+            if terminated:
+                agent.alighn_target_model()
+                break
+                
+            if len(agent.expirience_replay) > batch_size:
+                agent.retrain(batch_size)
+            
+            if timestep%10 == 0:
+                bar.update(timestep/10 + 1)
+        
+        bar.finish()
+        if (e + 1) % 10 == 0:
+            print("**********************************")
+            print("Episode: {}".format(e + 1))
+            env.render()
+            print("**********************************")

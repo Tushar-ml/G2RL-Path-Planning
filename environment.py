@@ -36,7 +36,8 @@ class WarehouseEnvironment:
 
         reset_state = self.coord[self.agent_idx]
         self.dist = manhattan_distance(reset_state[0], reset_state[1], reset_state[2], reset_state[3])
-        return reset_state[0] * reset_state[1]
+        graphical_state, _, _,_ = self.state(4)
+        return reset_state[0] * reset_state[1], graphical_state
     
     def generate_end_points_and_paths(self):
         value_map = map_to_value(self.init_arr)

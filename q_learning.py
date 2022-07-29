@@ -16,7 +16,7 @@ def training():
     all_rewards = []
 
     for i in range(1, 10001):
-        state = env.reset()
+        state,_ = env.reset()
 
         epochs, penalties, reward, = 0, 0, 0
         done = False
