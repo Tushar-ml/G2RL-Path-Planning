@@ -89,8 +89,7 @@ if __name__ == '__main__':
             action = agent.act(state)
             
             # Take action    
-            next_state, reward, terminated, info = env.step(action) 
-            next_state = np.reshape(next_state, [1, 1])
+            next_state, _, reward, terminated = env.step(action) 
             agent.store(state, action, reward, next_state, terminated)
             
             state = next_state
