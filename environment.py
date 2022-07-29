@@ -13,7 +13,7 @@ class WarehouseEnvironment:
         self.map_path = "data/cleaned_empty/empty-48-48-random-10_60_agents.png"
         self.amr_count = amr_count
         self.map_img_arr = np.asarray(Image.open(self.map_path))
-        self.n_states = height*width*height*width
+        self.n_states = height*width
         self.n_actions = len(self.action_space())
         self.agent_idx = agent_idx
         self.local_fov = local_fov
@@ -54,18 +54,19 @@ class WarehouseEnvironment:
         # print(f'Action taken: {conv}')
         
         target_array = (2*self.local_fov, 2*self.local_fov, 4)
-        local_obs, local_map, self.global_mapper_arr, isAgentDone, rewards, self.cells_skipped = update_coords(
+        local_obs, local_map, self.global_mapper_arr, isAgentDone, rewards, self.cells_skipped, self.init_arr, self.agent_prev_coord = update_coords(
             self.agents_paths, self.init_arr, self.agent_idx, self.time_idx,
             self.local_fov, self.global_mapper_arr, [x,y], self.agent_prev_coord,
             self.cells_skipped
         )
 
-        self.scenes.append(Image.fromarray(local_obs, 'RGB'))
-
-        self.agent_prev_coord = [x,y]
-        local_map = local_map.reshape(local_map.shape[0],local_map.shape[1],1)
-        combined_arr = np.dstack((local_obs, local_map))
-        combined_arr = symmetric_pad_array(combined_arr, target_array, 255)
+        combined_arr = np.array([])
+        if len(local_obs) > 0:
+            self.scenes.append(Image.fromarray(self.init_arr, 'RGB'))
+            local_map = local_map.reshape(local_map.shape[0],local_map.shape[1],1)
+            combined_arr = np.dstack((local_obs, local_map))
+            combined_arr = symmetric_pad_array(combined_arr, target_array, 255)
+        
 
         return combined_arr, rewards, isAgentDone
     
@@ -74,7 +75,7 @@ class WarehouseEnvironment:
             self.scenes[0].save(path,
                  save_all=True, append_images=self.scenes[1:], optimize=False, duration=length_s*4, loop=0)
         else:
-            print('scenes not generated')
+            pass
     def action_space(self):
         self.action_dict = {
             0:['up',0,1],
@@ -86,23 +87,23 @@ class WarehouseEnvironment:
         return list(self.action_dict.keys())
 
 
-import random
-actions = [0,1,2,3,4]
+# import random
+# actions = [0,1,2,3,4]
 
 
-env = WarehouseEnvironment()
+# env = WarehouseEnvironment()
 
 
-for ep in range(10):
-    env.reset()
-    print(f'Episode: {ep}')
-    for i in range(100):
-        act = random.choice(actions)
-        new_state,rewards,isDone = env.step(act)
-        print(rewards)
-        if isDone:
-            print("Reached Gole")
-            break
+# for ep in range(2):
+#     env.reset()
+#     print(f'Episode: {ep}')
+#     for i in range(100):
+#         act = random.choice(actions)
+#         new_state,rewards,isDone = env.step(act)
+#         print(rewards)
+#         if isDone:
+#             print("Reached Gole")
+#             break
 
 
-    env.create_scenes(path = f"data/agent_local_{ep}.gif")
+#     env.create_scenes(path = f"data/agent_local_{ep}.gif")

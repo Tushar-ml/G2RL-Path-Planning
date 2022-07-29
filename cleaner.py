@@ -31,4 +31,4 @@ def remove():
         os.remove(img)
 
 
-clean()
+remove()
