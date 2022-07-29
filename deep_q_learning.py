@@ -62,7 +62,7 @@ if __name__ == '__main__':
     from cnn_arch import get_cnn_model
 
     env = WarehouseEnvironment()
-    agent = Agent(env, get_cnn_model(48,48,4,4))
+    agent = Agent(env, get_cnn_model(30,30,4,4))
 
     batch_size = 32
     num_of_episodes = 100

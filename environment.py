@@ -36,7 +36,7 @@ class WarehouseEnvironment:
 
         reset_state = self.coord[self.agent_idx]
         self.dist = manhattan_distance(reset_state[0], reset_state[1], reset_state[2], reset_state[3])
-        graphical_state, _, _,_ = self.state(4)
+        graphical_state, _, _,_ = self.step(4)
         return reset_state[0] * reset_state[1], graphical_state
     
     def generate_end_points_and_paths(self):
@@ -74,7 +74,7 @@ class WarehouseEnvironment:
             local_map = local_map.reshape(local_map.shape[0],local_map.shape[1],1)
             combined_arr = np.dstack((local_obs, local_map))
             combined_arr = symmetric_pad_array(combined_arr, target_array, 255)
-        
+            combined_arr = combined_arr.reshape(1,1,combined_arr.shape[0], combined_arr.shape[1], combined_arr.shape[2])
 
         return combined_arr, self.agent_prev_coord[0] * self.agent_prev_coord[1], rewards, isAgentDone
     
@@ -104,8 +104,10 @@ class WarehouseEnvironment:
 # actions = [0,1,2,3,4]
 
 
-# env = WarehouseEnvironment()
-# coord = env.reset()
+env = WarehouseEnvironment()
+_, state = env.reset()
+
+print(state.shape)
 # env.render()
 # print(coord)
 
@@ -122,3 +124,5 @@ class WarehouseEnvironment:
 
 
 #     env.create_scenes(path = f"data/agent_local_{ep}.gif")
+
+
