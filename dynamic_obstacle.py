@@ -22,7 +22,10 @@ def initialize_objects(arr, n_dynamic_obst = 10):
     
     return coord, arr
 
-def update_coords(coords, inst_arr, agent, time_idx, width, global_map, direction, agent_old_coordinates, cells_skipped):
+def manhattan_distance(x_st, y_st, x_end, y_end):
+    return abs(x_end - x_st) + abs(y_end - y_st)
+
+def update_coords(coords, inst_arr, agent, time_idx, width, global_map, direction, agent_old_coordinates, cells_skipped, dist):
 
     h,w = inst_arr.shape[:2]
     
@@ -38,17 +41,16 @@ def update_coords(coords, inst_arr, agent, time_idx, width, global_map, directio
     h_new, w_new = h_old + direction[0], w_old + direction[1]
 
     if (h_new == coord[-1][0] and w_new == coord[-1][1]):
+        print("Agent Reached Gole")
         agentDone = True
 
     if (h_new >= h or w_new >= w) or (h_new < 0 or w_new < 0):
         agent_reward += rewards_dict('1')
-        print("Out of Plane")
         agentDone = True
-        
+
     else:
         if (inst_arr[h_new,w_new][0] == 255 and inst_arr[h_new,w_new][1] == 165 and inst_arr[h_new,w_new][2] == 0) or (inst_arr[h_new,w_new][0] == 0 and inst_arr[h_new,w_new][1] == 0 and inst_arr[h_new,w_new][2] == 0):
             agent_reward += rewards_dict('1')
-            print('Crashed')
             agentDone = True
 
         if (global_map[h_new, w_new] == 255) and (0<=h_new<h and 0<=w_new<w):
@@ -61,6 +63,10 @@ def update_coords(coords, inst_arr, agent, time_idx, width, global_map, directio
     
     if 0 > h_new or h_new>=h or 0>w_new or w_new>= w:
         h_new, w_new = h_old, w_old
+
+    if manhattan_distance(h_new, w_new, coord[-1][0], coord[-1][1]) < dist:
+        agent_reward += rewards_dict('3')
+        dist = manhattan_distance(h_new, w_new, coord[-1][0], coord[-1][1])
     
     inst_arr[h_old, w_old] = [255,255,255]
     inst_arr[h_new, w_new] = [255,0,0]
@@ -85,15 +91,16 @@ def update_coords(coords, inst_arr, agent, time_idx, width, global_map, directio
         #         inst_arr[h_new, w_new] = [255,165,0]
         #         inst_arr[h_old, w_old] = [255,255,255]
     
-    return np.array(local_obs), np.array(local_map), global_map, agentDone, agent_reward, cells_skipped, inst_arr, [h_new, w_new]
+    return np.array(local_obs), np.array(local_map), global_map, agentDone, agent_reward, cells_skipped, inst_arr, [h_new, w_new], dist
 
 
 def rewards_dict(case, N = 0):
-    r1,r2,r3 = -0.01, -0.1, 0.1
+    r1,r2,r3,r4 = -0.01, -0.1, 0.1, 0.05
     rewards = {
         '0':r1,
         '1':r1 + r2,
-        '2': r1 + N*r3
+        '2': r1 + N*r3,
+        '3': r4
     }
 
     return rewards[case]

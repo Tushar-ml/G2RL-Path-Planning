@@ -5,6 +5,9 @@ from map_generator import start_end_points, map_to_value, global_guidance
 from global_mapper import find_path, return_path
 from utils import symmetric_pad_array
 
+def manhattan_distance(x_st, y_st, x_end, y_end):
+    return abs(x_end - x_st) + abs(y_end - y_st)
+
 class WarehouseEnvironment:
 
     def __init__(self,height = 48, width = 48, amr_count = 20, agent_idx = 1, local_fov = 15):
@@ -30,6 +33,10 @@ class WarehouseEnvironment:
         self.time_idx = 1
         self.scenes = []
         self.cells_skipped = 0
+
+        reset_state = self.coord[self.agent_idx]
+        self.dist = manhattan_distance(reset_state[0], reset_state[1], reset_state[2], reset_state[3])
+        return reset_state[0] * reset_state[1]
     
     def generate_end_points_and_paths(self):
         value_map = map_to_value(self.init_arr)
@@ -54,22 +61,27 @@ class WarehouseEnvironment:
         # print(f'Action taken: {conv}')
         
         target_array = (2*self.local_fov, 2*self.local_fov, 4)
-        local_obs, local_map, self.global_mapper_arr, isAgentDone, rewards, self.cells_skipped, self.init_arr, self.agent_prev_coord = update_coords(
+        local_obs, local_map, self.global_mapper_arr, isAgentDone, rewards, self.cells_skipped, self.init_arr, self.agent_prev_coord, self.dist = update_coords(
             self.agents_paths, self.init_arr, self.agent_idx, self.time_idx,
             self.local_fov, self.global_mapper_arr, [x,y], self.agent_prev_coord,
-            self.cells_skipped
+            self.cells_skipped, self.dist
         )
 
         combined_arr = np.array([])
         if len(local_obs) > 0:
-            self.scenes.append(Image.fromarray(self.init_arr, 'RGB'))
+            self.scenes.append(Image.fromarray(local_obs, 'RGB'))
             local_map = local_map.reshape(local_map.shape[0],local_map.shape[1],1)
             combined_arr = np.dstack((local_obs, local_map))
             combined_arr = symmetric_pad_array(combined_arr, target_array, 255)
         
 
-        return combined_arr, rewards, isAgentDone
+        return combined_arr, self.agent_prev_coord[0] * self.agent_prev_coord[1], rewards, isAgentDone
     
+    def render(self):
+        assert len(self.init_arr) != 0, "Run env.reset() before proceeding"
+        img = Image.fromarray(self.init_arr,'RGB')
+        img.show()
+
     def create_scenes(self, path = "data/agent_locals.gif", length_s = 100):
         if len(self.scenes) > 0:
             self.scenes[0].save(path,
@@ -92,7 +104,9 @@ class WarehouseEnvironment:
 
 
 # env = WarehouseEnvironment()
-
+# coord = env.reset()
+# env.render()
+# print(coord)
 
 # for ep in range(2):
 #     env.reset()

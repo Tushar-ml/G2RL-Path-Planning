@@ -5,7 +5,7 @@ import os
 # load the image and convert into
 # numpy array
 empty_images = glob('data/cleaned_empty/empty*')
-generated_images = glob('data/agent_local_*')
+generated_images = glob('data/agents_locals_*')
 def clean():
     for img_name in empty_images:
 
