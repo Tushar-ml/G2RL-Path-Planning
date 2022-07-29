@@ -12,7 +12,7 @@ class Agent:
         self._action_space = enviroment.action_space()
         self._action_size = enviroment.n_actions
         
-        self.expirience_replay = deque(maxlen=2000)
+        self.expirience_replay = deque(maxlen=4)
         
         # Initialize discount and exploration rate
         self.gamma = 0.6
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     env = WarehouseEnvironment()
     agent = Agent(env, get_cnn_model(30,30,4,4))
 
-    batch_size = 32
+    batch_size = 3
     num_of_episodes = 100
     timesteps_per_episode = 1000
     agent.q_network.summary()
