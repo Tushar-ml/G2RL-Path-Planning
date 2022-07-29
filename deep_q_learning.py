@@ -5,7 +5,7 @@ from collections import deque
 from environment import WarehouseEnvironment
 
 class Agent:
-    def __init__(self, enviroment):
+    def __init__(self, enviroment, model):
         
         # Initialize atributes
         self._state_size = enviroment.n_states
@@ -19,9 +19,9 @@ class Agent:
         self.epsilon = 0.1
         
         # Build networks
-        self.q_network = self._build_compile_model()
-        self.target_network = self._build_compile_model()
-        self.alighn_target_model()
+        self.q_network = model
+        self.target_network = model
+        # self.alighn_target_model()
 
     def store(self, state, action, reward, next_state, terminated):
         self.expirience_replay.append((state, action, reward, next_state, terminated))
@@ -56,10 +56,15 @@ class Agent:
             self.q_network.fit(state, target, epochs=1, verbose=0)
 
 
-env = WarehouseEnvironment()
-agent = Agent(env)
+if __name__ == '__main__':
+    from environment import WarehouseEnvironment
+    from deep_q_learning import Agent
+    from cnn_arch import get_cnn_model
 
-batch_size = 32
-num_of_episodes = 100
-timesteps_per_episode = 1000
-agent.q_network.summary()
+    env = WarehouseEnvironment()
+    agent = Agent(env, get_cnn_model(48,48,4,4))
+
+    batch_size = 32
+    num_of_episodes = 100
+    timesteps_per_episode = 1000
+    agent.q_network.summary()
