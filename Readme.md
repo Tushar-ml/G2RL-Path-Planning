@@ -9,3 +9,10 @@ Two methods applied:
 
 - For Q-Learning Implementation run q_learning.py
 - For Deep Q Learning, implement run deep_q_learning.py
+
+```
+Wang, Binyu, et al.
+Mobile Robot Path Planning in Dynamic Environments through Globally Guided Reinforcement Learning.
+2,arXiv, 11 Sept. 2020. arXiv.org,
+https://doi.org/10.48550/arXiv.2005.05420.
+```
