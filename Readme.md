@@ -16,3 +16,7 @@ Mobile Robot Path Planning in Dynamic Environments through Globally Guided Reinf
 2,arXiv, 11 Sept. 2020. arXiv.org,
 https://doi.org/10.48550/arXiv.2005.05420.
 ```
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Tushar-ml/G2RL-Path-Planning&type=Date)](https://star-history.com/#Tushar-ml/G2RL-Path-Planning&Date)
